@@ -32,19 +32,12 @@ class Tabs extends \yii\bootstrap\Tabs
             var controllerId = "' . $controllerId . '";
 
             jQuery("#relation-tabs > li > a").on("click", function (event) {
-
                 var activeTab     = jQuery(this).attr("href");
                 jQuery.cookie.raw = true;
-                //if(jQuery.cookie("_bs_activeTab_" + controllerId, { path: "/" }) !== null)
-               // {
-                //console.log("bla");
-                    jQuery.cookie("_bs_activeTab_" + controllerId, activeTab, { path: "/" });
-                //};
-
+                jQuery.cookie("_bs_activeTab_" + controllerId, activeTab, { path: "/" });
             });
 
             jQuery(window).on("load", function () {
-
                 var activeTab     = jQuery.cookie("_bs_activeTab_" + controllerId);
                 jQuery.cookie.raw = true;
                 jQuery.cookie("_bs_route_" + controllerId, route, { path: "/" });
