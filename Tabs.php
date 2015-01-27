@@ -12,8 +12,20 @@ class Tabs extends \yii\bootstrap\Tabs
     /**
      * Register assetBundle
      */
-    private static function registerAssets()
+    public static function registerAssets()
     {
+        // Register route cookie function script
+        \Yii::$app->controller->getView()->registerJs(
+            '
+            function setRouteCookie(route, controllerId)
+            {
+                jQuery.cookie.raw = true;
+                jQuery.cookie("_bs_route_" + controllerId, route, { path: "/" });
+            }',
+            View::POS_HEAD,
+            'setRouteCookie'
+        );
+
         BootstrapAsset::register(\Yii::$app->controller->getView());
     }
 
@@ -38,10 +50,7 @@ class Tabs extends \yii\bootstrap\Tabs
             });
 
             jQuery(window).on("load", function () {
-                var activeTab     = jQuery.cookie("_bs_activeTab_" + controllerId);
-                jQuery.cookie.raw = true;
-                jQuery.cookie("_bs_route_" + controllerId, route, { path: "/" });
-
+                var activeTab = jQuery.cookie("_bs_activeTab_" + controllerId);
                 if (activeTab !== "") {
                     jQuery("[href=" + activeTab + "]").tab("show");
                 }
