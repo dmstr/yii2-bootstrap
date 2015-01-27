@@ -33,7 +33,7 @@ class Tabs extends \yii\bootstrap\Tabs
      * @param $route
      * @param $controllerId
      */
-    public static function setParentRelationRoute($route, $controllerId)
+    public static function rememberActiveTab($route, $controllerId)
     {
         self::registerAssets();
 
@@ -56,7 +56,7 @@ class Tabs extends \yii\bootstrap\Tabs
                 }
             });',
             View::POS_READY,
-            'setParentRelationRoute'
+            'rememberActiveTab'
         );
     }
 
