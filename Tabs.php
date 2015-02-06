@@ -33,31 +33,77 @@ class Tabs extends \yii\bootstrap\Tabs
      * @param $route
      * @param $controllerId
      */
-    public static function rememberActiveTab($route, $controllerId)
+    public static function rememberActiveTab($controllerId)
     {
         self::registerAssets();
+$js = <<<JS
+            //var controllerId = "{$controllerId}";
+            if (history.state) {
+                currentUrl = history.state.url;
+            } else {
+                currentUrl = document.location.href;
+            }
+            currentUrl = document.URL;
+            var controllerId = currentUrl
+                    .toLowerCase()
+                    .replace(/ /g,'-')
+                    .replace(/[^\w-]+/g,'');
 
-        // Register cookie script
-        \Yii::$app->controller->getView()->registerJs(
-            '
-            var route        = "' . $route . '";
-            var controllerId = "' . $controllerId . '";
+console.log(history);
 
-            jQuery("#relation-tabs > li > a").on("click", function (event) {
-                var activeTab     = jQuery(this).attr("href");
+            function setCookie(elem) {
+                currentUrl = document.URL;
+                var controllerId = currentUrl
+                    .toLowerCase()
+                    .replace(/ /g,'-')
+                    .replace(/[^\w-]+/g,'');
+                var activeTab     = jQuery(elem).attr("href");
                 jQuery.cookie.raw = true;
                 jQuery.cookie("_bs_activeTab_" + controllerId, activeTab, { path: "/" });
-            });
+                console.log(document.URL);
+            }
 
-            jQuery(window).on("load", function () {
+            function initialSelect() {
+                currentUrl = document.URL;
+                var controllerId = currentUrl
+                    .toLowerCase()
+                    .replace(/ /g,'-')
+                    .replace(/[^\w-]+/g,'');
                 var activeTab = jQuery.cookie("_bs_activeTab_" + controllerId);
                 if (activeTab !== "") {
                     jQuery("[href=" + activeTab + "]").tab("show");
                 }
-            });',
+            }
+
+            jQuery("#relation-tabs > li > a").on("click", function (event) {
+                setCookie(this);
+                console.log('tab click');
+            });
+
+            $(document).on('pjax:end', function() {
+               setCookie($('#relation-tabs .active A'));
+               console.log('pjax end');
+             } );
+
+            jQuery(window).on("load", function () {
+               initialSelect();
+               console.log('load');
+            } );
+
+            console.log('AJAX');
+JS;
+
+        if (\Yii::$app->request->isAjax) {
+            echo "<script type='text/javascript'>{$js}</script>";
+        } else {
+
+        // Register cookie script
+        \Yii::$app->controller->getView()->registerJs(
+            $js,
             View::POS_READY,
             'rememberActiveTab'
         );
+        }
     }
 
     /**
