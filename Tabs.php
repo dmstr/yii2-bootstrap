@@ -14,18 +14,6 @@ class Tabs extends \yii\bootstrap\Tabs
      */
     public static function registerAssets()
     {
-        // Register route cookie function script
-        \Yii::$app->controller->getView()->registerJs(
-            '
-            function setRouteCookie(route, controllerId)
-            {
-                jQuery.cookie.raw = true;
-                jQuery.cookie("_bs_route_" + controllerId, route, { path: "/" });
-            }',
-            View::POS_HEAD,
-            'setRouteCookie'
-        );
-
         BootstrapAsset::register(\Yii::$app->controller->getView());
     }
 
