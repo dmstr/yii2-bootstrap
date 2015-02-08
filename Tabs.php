@@ -18,46 +18,29 @@ class Tabs extends \yii\bootstrap\Tabs
     }
 
     /**
-     * @param $route
-     * @param $controllerId
+     * Remember active tab state for this URL
      */
-    public static function rememberActiveTab($controllerId)
+    public static function rememberActiveState()
     {
         self::registerAssets();
 $js = <<<JS
-            //var controllerId = "{$controllerId}";
-            if (history.state) {
-                currentUrl = history.state.url;
-            } else {
-                currentUrl = document.location.href;
+            function getControllerId() {
+                currentUrl = document.URL;
+                return currentUrl
+                        .toLowerCase()
+                        .replace(/ /g,'-')
+                        .replace(/[^\w-]+/g,'');
             }
-            currentUrl = document.URL;
-            var controllerId = currentUrl
-                    .toLowerCase()
-                    .replace(/ /g,'-')
-                    .replace(/[^\w-]+/g,'');
-
-console.log(history);
 
             function setCookie(elem) {
-                currentUrl = document.URL;
-                var controllerId = currentUrl
-                    .toLowerCase()
-                    .replace(/ /g,'-')
-                    .replace(/[^\w-]+/g,'');
+            console.log(elem);
                 var activeTab     = jQuery(elem).attr("href");
                 jQuery.cookie.raw = true;
-                jQuery.cookie("_bs_activeTab_" + controllerId, activeTab, { path: "/" });
-                console.log(document.URL);
+                jQuery.cookie("_bs_activeTab_" + getControllerId(), activeTab, { path: "/" });
             }
 
             function initialSelect() {
-                currentUrl = document.URL;
-                var controllerId = currentUrl
-                    .toLowerCase()
-                    .replace(/ /g,'-')
-                    .replace(/[^\w-]+/g,'');
-                var activeTab = jQuery.cookie("_bs_activeTab_" + controllerId);
+                var activeTab = jQuery.cookie("_bs_activeTab_" + getControllerId());
                 if (activeTab !== "") {
                     jQuery("[href=" + activeTab + "]").tab("show");
                 }
@@ -65,20 +48,15 @@ console.log(history);
 
             jQuery("#relation-tabs > li > a").on("click", function (event) {
                 setCookie(this);
-                console.log('tab click');
             });
 
-            $(document).on('pjax:end', function() {
+            jQuery(document).on('pjax:end', function() {
                setCookie($('#relation-tabs .active A'));
-               console.log('pjax end');
-             } );
+            });
 
             jQuery(window).on("load", function () {
                initialSelect();
-               console.log('load');
-            } );
-
-            console.log('AJAX');
+            });
 JS;
 
         if (\Yii::$app->request->isAjax) {
