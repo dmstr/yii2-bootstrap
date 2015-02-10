@@ -54,10 +54,11 @@ JS;
      */
     public static function clearLocalStorage()
     {
-        \Yii::$app->controller->getView()->registerJs(
+        // TODO @c.stebe - This removes all cookies, eg. the ones set from Yii 2 debug toolbar
+        /*\Yii::$app->controller->getView()->registerJs(
             'window.localStorage.clear();',
             View::POS_READY,
             'clearLocalStorage'
-        );
+        );*/
     }
 }
