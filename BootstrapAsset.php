@@ -72,7 +72,7 @@ function initialSelect() {
     if (hasStorage) {
         var activeTab = window.localStorage.getItem("_bs_activeTab_" + getControllerId());
         if (activeTab !== "") {
-            jQuery("[href=" + activeTab + "]").tab("show");
+            jQuery("[href='" + activeTab + "']").tab("show");
         }
     }
 }
