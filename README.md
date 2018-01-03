@@ -1,6 +1,12 @@
-yii2-bootstrap
+Yii2-bootstrap
 ==============
-yii2 bootstrap components and extensions from diemeisterei GmbH
+
+[![Latest Stable Version](https://poser.pugx.org/dmstr/yii2-bootstrap/v/stable.svg)](https://packagist.org/packages/dmstr/yii2-bootstrap) 
+[![Total Downloads](https://poser.pugx.org/dmstr/yii2-bootstrap/downloads.svg)](https://packagist.org/packages/dmstr/yii2-bootstrap)
+[![License](https://poser.pugx.org/dmstr/yii2-bootstrap/license.svg)](https://packagist.org/packages/dmstr/yii2-bootstrap)
+
+
+Yii2 bootstrap components and extensions from diemeisterei GmbH
 
 Installation
 ------------
