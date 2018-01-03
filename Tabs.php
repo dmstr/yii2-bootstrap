@@ -43,7 +43,7 @@ JS;
             // Register cookie script
             \Yii::$app->controller->getView()->registerJs(
                 $js,
-                View::POS_READY,
+                View::POS_END,
                 'rememberActiveState'
             );
         }
