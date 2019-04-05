@@ -2,63 +2,56 @@
 
 namespace dmstr\bootstrap;
 
+use Yii;
+use \yii\bootstrap\Tabs as BaseTabs;
 use yii\web\View;
 
 /**
- * @inheritdoc
- */
-class Tabs extends \yii\bootstrap\Tabs
+ * Tabs widget which remembers the tab status
+*/
+class Tabs extends BaseTabs
 {
-    /**
-     * Register assetBundle
-     */
-    public static function registerAssets()
+
+    public function init()
     {
-        BootstrapAsset::register(\Yii::$app->controller->getView());
+        parent::init();
+        static::registerAssets($this->view,$this->id);
     }
 
     /**
+     * @param View $view
+     * @param string $widget_id
+    */
+    public static function registerAssets($view,$widget_id)
+    {
+        $view->registerJs(<<<JS
+if (window.activeDmstrBootstrapTabIds === undefined) {
+  window.activeDmstrBootstrapTabIds = [];
+}
+if (window.activeDmstrBootstrapTabIds.indexOf("{$widget_id}") === -1) {
+  window.activeDmstrBootstrapTabIds.push("{$widget_id}")
+}
+
+JS
+,View::POS_HEAD);
+        BootstrapAsset::register($view);
+    }
+
+    /**
+     * @deprecated
+     *
      * Remember active tab state for this URL
      */
     public static function rememberActiveState()
     {
-        self::registerAssets();
-        $js = <<<JS
-            jQuery("#relation-tabs > li > a").on("click", function () {
-                setStorage(this);
-            });
-
-            jQuery(document).on('pjax:end', function() {
-               setStorage($('#relation-tabs .active A'));
-            });
-
-            jQuery(window).on("load", function () {
-               initialSelect();
-            });
-JS;
-
-        if (\Yii::$app->request->isAjax) {
-            echo "<script type='text/javascript'>{$js}</script>";
-        } else {
-            // Register cookie script
-            \Yii::$app->controller->getView()->registerJs(
-                $js,
-                View::POS_END,
-                'rememberActiveState'
-            );
-        }
+       // Ensure backward compatibility
     }
 
     /**
-     * Clear the localStorage of your browser
+     * Clear active tabs local storage cache
      */
     public static function clearLocalStorage()
     {
-        // TODO @c.stebe - This removes all cookies, eg. the ones set from Yii 2 debug toolbar
-        /*\Yii::$app->controller->getView()->registerJs(
-            'window.localStorage.clear();',
-            View::POS_READY,
-            'clearLocalStorage'
-        );*/
+        Yii::$app->controller->view->registerJs('window.activeDmstrBootstrapTabIds = [];window.localStorage.clear("activeDmstrBootstrapTabs");');
     }
 }
