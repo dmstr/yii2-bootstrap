@@ -38,7 +38,7 @@ class Tabs extends \yii\bootstrap\Tabs
 JS;
 
         if (\Yii::$app->request->isAjax) {
-            echo "<script type='text/javascript'>{$js}</script>";
+            return "<script type='text/javascript'>{$js}</script>";
         } else {
             // Register cookie script
             \Yii::$app->controller->getView()->registerJs(
